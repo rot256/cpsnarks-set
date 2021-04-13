@@ -18,30 +18,27 @@ use crate::{
     utils::ConvertibleUnknownOrderGroup,
     utils::{curve::CurvePointProjective, random_between},
 };
-use accumulator::group::{Group};
+use accumulator::group::Group;
 use channel::{MembershipProverChannel, MembershipVerifierChannel};
+use curve25519_dalek::ristretto::RistrettoPoint;
 use rand::{CryptoRng, RngCore};
 use rug::rand::MutRandState;
 use rug::Integer;
-use curve25519_dalek::{ristretto::RistrettoPoint};
-use serde::{Serialize};
+use serde::Serialize;
 
 use proofsize_derive::*;
 
 pub mod channel;
 pub mod transcript;
 
-pub struct CRS<G: ConvertibleUnknownOrderGroup, P: CurvePointProjective>
-{
+pub struct CRS<G: ConvertibleUnknownOrderGroup, P: CurvePointProjective> {
     // G contains the information about Z^*_N
     pub parameters: Parameters,
     pub crs_root: CRSRoot<G>,
     pub crs_modeq: CRSModEq<G, P>,
 }
 
-impl<G: ConvertibleUnknownOrderGroup, P: CurvePointProjective> Clone
-    for CRS<G, P>
-{
+impl<G: ConvertibleUnknownOrderGroup, P: CurvePointProjective> Clone for CRS<G, P> {
     fn clone(&self) -> Self {
         Self {
             parameters: self.parameters.clone(),
@@ -51,11 +48,7 @@ impl<G: ConvertibleUnknownOrderGroup, P: CurvePointProjective> Clone
     }
 }
 
-pub struct Protocol<
-    G: ConvertibleUnknownOrderGroup,
-    P: CurvePointProjective,
-
-> {
+pub struct Protocol<G: ConvertibleUnknownOrderGroup, P: CurvePointProjective> {
     pub crs: CRS<G, P>,
 }
 
@@ -70,14 +63,9 @@ pub struct Witness<G: ConvertibleUnknownOrderGroup> {
     pub w: G::Elem,
 }
 
-
-#[derive(Serialize, ProofSize)] 
-pub struct Proof<
-    G: ConvertibleUnknownOrderGroup, 
-    P: CurvePointProjective,
-
->
-where 
+#[derive(Serialize, ProofSize)]
+pub struct Proof<G: ConvertibleUnknownOrderGroup, P: CurvePointProjective>
+where
     <G as Group>::Elem: Serialize,
     <IntegerCommitment<G> as Commitment>::Instance: Serialize,
     RootProof<G>: Serialize,
@@ -88,7 +76,7 @@ where
     pub proof_modeq: ModEqProof<G, P>,
 }
 
-impl<G: ConvertibleUnknownOrderGroup + Serialize , P: CurvePointProjective  + Serialize > Clone
+impl<G: ConvertibleUnknownOrderGroup + Serialize, P: CurvePointProjective + Serialize> Clone
     for Proof<G, P>
 {
     fn clone(&self) -> Self {
@@ -100,16 +88,15 @@ impl<G: ConvertibleUnknownOrderGroup + Serialize , P: CurvePointProjective  + Se
     }
 }
 
-impl<G: ConvertibleUnknownOrderGroup>
-    Protocol<G, RistrettoPoint>
-{
+impl<G: ConvertibleUnknownOrderGroup> Protocol<G, RistrettoPoint> {
     pub fn setup_default<R1: MutRandState, R2: RngCore + CryptoRng>(
         parameters: &Parameters,
         rng1: &mut R1,
         rng2: &mut R2,
     ) -> Result<Protocol<G, RistrettoPoint>, SetupError> {
         let integer_commitment_parameters = IntegerCommitment::<G>::setup(rng1);
-        let pedersen_commitment_parameters = PedersenCommitment::<RistrettoPoint>::setup_default(rng2);
+        let pedersen_commitment_parameters =
+            PedersenCommitment::<RistrettoPoint>::setup_default(rng2);
 
         Ok(Protocol {
             crs: CRS::<G, RistrettoPoint> {
@@ -117,7 +104,7 @@ impl<G: ConvertibleUnknownOrderGroup>
                 crs_modeq: CRSModEq::<G, RistrettoPoint> {
                     parameters: parameters.clone(),
                     integer_commitment_parameters: integer_commitment_parameters.clone(),
-                    pedersen_commitment_parameters: pedersen_commitment_parameters.clone(),
+                    pedersen_commitment_parameters,
                 },
                 crs_root: CRSRoot::<G> {
                     parameters: parameters.clone(),
@@ -125,10 +112,10 @@ impl<G: ConvertibleUnknownOrderGroup>
                 },
             },
         })
-    } 
+    }
 }
 
-impl<G: ConvertibleUnknownOrderGroup + Serialize , P: CurvePointProjective + Serialize >
+impl<G: ConvertibleUnknownOrderGroup + Serialize, P: CurvePointProjective + Serialize>
     Protocol<G, P>
 {
     pub fn setup<R1: MutRandState, R2: RngCore + CryptoRng>(
@@ -145,7 +132,7 @@ impl<G: ConvertibleUnknownOrderGroup + Serialize , P: CurvePointProjective + Ser
                 crs_modeq: CRSModEq::<G, P> {
                     parameters: parameters.clone(),
                     integer_commitment_parameters: integer_commitment_parameters.clone(),
-                    pedersen_commitment_parameters: pedersen_commitment_parameters.clone(),
+                    pedersen_commitment_parameters,
                 },
                 crs_root: CRSRoot::<G> {
                     parameters: parameters.clone(),
@@ -153,14 +140,12 @@ impl<G: ConvertibleUnknownOrderGroup + Serialize , P: CurvePointProjective + Ser
                 },
             },
         })
-    } 
+    }
 
     pub fn prove<
         R1: MutRandState,
         R2: RngCore + CryptoRng,
-        C: MembershipVerifierChannel<G>
-            + RootVerifierChannel<G>
-            + ModEqVerifierChannel<G, P>
+        C: MembershipVerifierChannel<G> + RootVerifierChannel<G> + ModEqVerifierChannel<G, P>,
     >(
         &self,
         verifier_channel: &mut C,
@@ -210,9 +195,7 @@ impl<G: ConvertibleUnknownOrderGroup + Serialize , P: CurvePointProjective + Ser
     }
 
     pub fn verify<
-        C: MembershipProverChannel<G>
-            + RootProverChannel<G>
-            + ModEqProverChannel<G, P>
+        C: MembershipProverChannel<G> + RootProverChannel<G> + ModEqProverChannel<G, P>,
     >(
         &self,
         prover_channel: &mut C,
@@ -236,11 +219,8 @@ impl<G: ConvertibleUnknownOrderGroup + Serialize , P: CurvePointProjective + Ser
             },
         )?;
 
-
         Ok(())
     }
-
-
 
     pub fn from_crs(crs: &CRS<G, P>) -> Protocol<G, P> {
         Protocol { crs: crs.clone() }
@@ -489,4 +469,3 @@ mod test {
         protocol.verify(&mut prover_channel, &statement).unwrap();
     }
 }
-

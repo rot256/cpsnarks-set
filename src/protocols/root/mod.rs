@@ -8,10 +8,9 @@ use crate::{
 use channel::{RootProverChannel, RootVerifierChannel};
 use rug::rand::MutRandState;
 use rug::Integer;
-use serde::{Serialize};
+use serde::Serialize;
 
 use proofsize_derive::*;
-
 
 pub mod channel;
 pub mod transcript;

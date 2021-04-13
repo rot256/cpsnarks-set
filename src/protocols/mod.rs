@@ -1,10 +1,11 @@
 //! All the protocol implementations.
 
 use crate::{
-    channels::ChannelError, commitments::CommitmentError,
-   // protocols::hash_to_prime::HashToPrimeError,
+    channels::ChannelError,
+    commitments::CommitmentError,
+    // protocols::hash_to_prime::HashToPrimeError,
 };
-use ark_relations::r1cs::{SynthesisError};
+use ark_relations::r1cs::SynthesisError;
 use rug::Integer;
 
 //pub mod coprime;

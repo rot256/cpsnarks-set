@@ -13,7 +13,7 @@ use crate::{
 use channel::{ModEqProverChannel, ModEqVerifierChannel};
 use rand::{CryptoRng, RngCore};
 use rug::{rand::MutRandState, Integer};
-use serde::{Serialize};
+use serde::Serialize;
 
 use proofsize_derive::*;
 
@@ -52,9 +52,8 @@ pub struct Message2<P: CurvePointProjective> {
     pub s_r_q: P::ScalarField,
 }
 
-#[derive(Clone, Serialize, ProofSize)] 
-pub struct Proof<G: ConvertibleUnknownOrderGroup, P: CurvePointProjective> 
-{
+#[derive(Clone, Serialize, ProofSize)]
+pub struct Proof<G: ConvertibleUnknownOrderGroup, P: CurvePointProjective> {
     pub message1: Message1<G, P>,
     pub message2: Message2<P>,
 }

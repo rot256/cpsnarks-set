@@ -44,15 +44,9 @@ where
 mod zexe {
     use super::{CurvePointProjective, Field};
     use crate::utils::{bits_big_endian_to_bytes_big_endian, bytes_to_integer, curve::CurveError};
-    use ark_ec::{
-            ProjectiveCurve,
-    };
-    use ark_ff::{
-        BigInteger, PrimeField, FpParameters,
-    };
-    use ark_serialize::{
-       CanonicalSerialize, SerializationError,
-   };
+    use ark_ec::ProjectiveCurve;
+    use ark_ff::{BigInteger, FpParameters, PrimeField};
+    use ark_serialize::{CanonicalSerialize, SerializationError};
 
     use rand::{CryptoRng, RngCore};
     use rug::Integer;
@@ -98,9 +92,11 @@ mod zexe {
             F::rand(rng)
         }
     }
-    
-    impl<P: ProjectiveCurve> CurvePointProjective for P 
-    where <P as ProjectiveCurve>::ScalarField: AsRef<[u64]> {
+
+    impl<P: ProjectiveCurve> CurvePointProjective for P
+    where
+        <P as ProjectiveCurve>::ScalarField: AsRef<[u64]>,
+    {
         type ScalarField = P::ScalarField;
 
         fn mul(&self, s: &Self::ScalarField) -> Self {

@@ -28,7 +28,7 @@ use merlin::Transcript;
 use rug::Integer;
 use std::cell::RefCell;
 
-use serde::{Serialize};
+use serde::Serialize;
 
 pub trait TranscriptProtocolMembership<G: ConvertibleUnknownOrderGroup>:
     TranscriptProtocolInteger<G> + TranscriptProtocolChallenge
@@ -43,13 +43,9 @@ impl<G: ConvertibleUnknownOrderGroup> TranscriptProtocolMembership<G> for Transc
 }
 pub struct TranscriptVerifierChannel<
     'a,
-    G: ConvertibleUnknownOrderGroup + Serialize ,
-    P: CurvePointProjective + Serialize ,
-    
-    T: TranscriptProtocolMembership<G>
-        + TranscriptProtocolRoot<G>
-        + TranscriptProtocolModEq<G, P>
-        ,
+    G: ConvertibleUnknownOrderGroup + Serialize,
+    P: CurvePointProjective + Serialize,
+    T: TranscriptProtocolMembership<G> + TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P>,
 > {
     transcript: &'a RefCell<T>,
     c_e: Option<<IntegerCommitment<G> as Commitment>::Instance>,
@@ -59,11 +55,9 @@ pub struct TranscriptVerifierChannel<
 
 impl<
         'a,
-        G: ConvertibleUnknownOrderGroup + Serialize ,
-        P: CurvePointProjective + Serialize ,
-        T: TranscriptProtocolMembership<G>
-            + TranscriptProtocolRoot<G>
-            + TranscriptProtocolModEq<G, P>,
+        G: ConvertibleUnknownOrderGroup + Serialize,
+        P: CurvePointProjective + Serialize,
+        T: TranscriptProtocolMembership<G> + TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P>,
     > TranscriptVerifierChannel<'a, G, P, T>
 {
     pub fn new(
@@ -101,13 +95,9 @@ impl<
 
 impl<
         'a,
-        G: ConvertibleUnknownOrderGroup + Serialize ,
-        P: CurvePointProjective + Serialize ,
-        
-        T: TranscriptProtocolMembership<G>
-            + TranscriptProtocolRoot<G>
-            + TranscriptProtocolModEq<G, P>
-            ,
+        G: ConvertibleUnknownOrderGroup + Serialize,
+        P: CurvePointProjective + Serialize,
+        T: TranscriptProtocolMembership<G> + TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P>,
     > RootVerifierChannel<G> for TranscriptVerifierChannel<'a, G, P, T>
 {
     fn send_message1(
@@ -135,13 +125,9 @@ impl<
 
 impl<
         'a,
-        G: ConvertibleUnknownOrderGroup + Serialize ,
-        P: CurvePointProjective + Serialize ,
-        
-        T: TranscriptProtocolMembership<G>
-            + TranscriptProtocolRoot<G>
-            + TranscriptProtocolModEq<G, P>
-            ,
+        G: ConvertibleUnknownOrderGroup + Serialize,
+        P: CurvePointProjective + Serialize,
+        T: TranscriptProtocolMembership<G> + TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P>,
     > ModEqVerifierChannel<G, P> for TranscriptVerifierChannel<'a, G, P, T>
 {
     fn send_message1(
@@ -163,16 +149,11 @@ impl<
     }
 }
 
-
 pub struct TranscriptProverChannel<
     'a,
-    G: ConvertibleUnknownOrderGroup + Serialize ,
-    P: CurvePointProjective + Serialize ,
-    
-    T: TranscriptProtocolMembership<G>
-        + TranscriptProtocolRoot<G>
-        + TranscriptProtocolModEq<G, P>
-        ,
+    G: ConvertibleUnknownOrderGroup + Serialize,
+    P: CurvePointProjective + Serialize,
+    T: TranscriptProtocolMembership<G> + TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P>,
 > {
     transcript: &'a RefCell<T>,
     root_transcript_prover_channel: RootTranscriptProverChannel<'a, G, T>,
@@ -182,13 +163,9 @@ pub struct TranscriptProverChannel<
 
 impl<
         'a,
-        G: ConvertibleUnknownOrderGroup + Serialize ,
-        P: CurvePointProjective + Serialize ,
-        
-        T: TranscriptProtocolMembership<G>
-            + TranscriptProtocolRoot<G>
-            + TranscriptProtocolModEq<G, P>
-            ,
+        G: ConvertibleUnknownOrderGroup + Serialize,
+        P: CurvePointProjective + Serialize,
+        T: TranscriptProtocolMembership<G> + TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P>,
     > RootProverChannel<G> for TranscriptProverChannel<'a, G, P, T>
 {
     fn receive_message1(&mut self) -> Result<crate::protocols::root::Message1<G>, ChannelError> {
@@ -208,13 +185,9 @@ impl<
 
 impl<
         'a,
-        G: ConvertibleUnknownOrderGroup + Serialize ,
-        P: CurvePointProjective + Serialize ,
-        
-        T: TranscriptProtocolMembership<G>
-            + TranscriptProtocolRoot<G>
-            + TranscriptProtocolModEq<G, P>
-            ,
+        G: ConvertibleUnknownOrderGroup + Serialize,
+        P: CurvePointProjective + Serialize,
+        T: TranscriptProtocolMembership<G> + TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P>,
     > ModEqProverChannel<G, P> for TranscriptProverChannel<'a, G, P, T>
 {
     fn receive_message1(
@@ -231,17 +204,11 @@ impl<
     }
 }
 
-
-
 impl<
         'a,
-        G: ConvertibleUnknownOrderGroup + Serialize ,
-        P: CurvePointProjective + Serialize ,
-        
-        T: TranscriptProtocolMembership<G>
-            + TranscriptProtocolRoot<G>
-            + TranscriptProtocolModEq<G, P>
-            ,
+        G: ConvertibleUnknownOrderGroup + Serialize,
+        P: CurvePointProjective + Serialize,
+        T: TranscriptProtocolMembership<G> + TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P>,
     > MembershipVerifierChannel<G> for TranscriptVerifierChannel<'a, G, P, T>
 {
     fn send_c_e(
@@ -258,13 +225,9 @@ impl<
 
 impl<
         'a,
-        G: ConvertibleUnknownOrderGroup + Serialize ,
-        P: CurvePointProjective + Serialize ,
-        
-        T: TranscriptProtocolMembership<G>
-            + TranscriptProtocolRoot<G>
-            + TranscriptProtocolModEq<G, P>
-            ,
+        G: ConvertibleUnknownOrderGroup + Serialize,
+        P: CurvePointProjective + Serialize,
+        T: TranscriptProtocolMembership<G> + TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P>,
     > MembershipProverChannel<G> for TranscriptProverChannel<'a, G, P, T>
 {
     fn receive_c_e(
@@ -279,13 +242,9 @@ impl<
 
 impl<
         'a,
-        G: ConvertibleUnknownOrderGroup + Serialize ,
-        P: CurvePointProjective + Serialize ,
-        
-        T: TranscriptProtocolMembership<G>
-            + TranscriptProtocolRoot<G>
-            + TranscriptProtocolModEq<G, P>
-            ,
+        G: ConvertibleUnknownOrderGroup + Serialize,
+        P: CurvePointProjective + Serialize,
+        T: TranscriptProtocolMembership<G> + TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P>,
     > TranscriptProverChannel<'a, G, P, T>
 {
     pub fn new(

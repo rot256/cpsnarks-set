@@ -6,7 +6,8 @@
 use crate::{
     protocols::{
         //hash_to_prime::transcript::TranscriptProtocolHashToPrime,
-        modeq::transcript::TranscriptProtocolModEq, root::transcript::TranscriptProtocolRoot,
+        modeq::transcript::TranscriptProtocolModEq,
+        root::transcript::TranscriptProtocolRoot,
     },
     utils::{
         bigint_to_bytes,
@@ -28,8 +29,7 @@ quick_error! {
 pub trait TranscriptProtocolMembershipPrime<
     G: ConvertibleUnknownOrderGroup,
     P: CurvePointProjective,
->:
-    TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P> //+ TranscriptProtocolHashToPrime<P>
+>: TranscriptProtocolRoot<G> + TranscriptProtocolModEq<G, P> //+ TranscriptProtocolHashToPrime<P>
 {
 }
 
